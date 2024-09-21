@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager 2 Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Manager 2 Dashboard</h1>
+
+        <h2>Project Overview</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Active Projects</h4>
+                <p>{{ projects|length }}</p>  <!-- Assuming you fetch projects similar to tasks -->
+            </div>
+            <div class="col-md-6">
+                <h4>Upcoming Deadlines</h4>
+                <ul>
+                    {% for task in tasks if task.due_date >= today %}
+                    <li>{{ task.task_name }} (Due: {{ task.due_date }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <h2>Key Performance Indicators</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Average Completion Time</td>
+                    <td>{{ average_completion_time }} days</td>  <!-- Assuming you calculate this in your app.py -->
+                </tr>
+                <tr>
+                    <td>Task Completion Rate</td>
+                    <td>{{ task_completion_rate }}%</td>  <!-- Assuming you calculate this in your app.py -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <a href="/" class="btn btn-primary">Back to Home</a>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>User Dashboard</h1>
+        {% if tasks %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Status</th>
+                        <th>Percent Complete</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.task_name }}</td>
+                        <td>{{ task.status }}</td>
+                        <td>{{ task.percent_complete }}</td>
+                        <td>{{ task.due_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-warning">No tasks available.</div>
+        {% endif %}
+    </div>
+    <a href="/" class="btn btn-primary">Back to Home</a>
+
+</body>
+</html>
