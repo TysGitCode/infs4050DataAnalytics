@@ -57,14 +57,35 @@
 <body>
     <nav>
         <ul>
-            <li><a href="/user_dashboard">User Dashboard</a></li>
-            <li><a href="/manager1_dashboard">Manager 1 Dashboard</a></li>
-            <li><a href="/manager2_dashboard">Manager 2 Dashboard</a></li>
+            {% if session.role == 'user' %}
+                <li><a href="/user_dashboard">User Dashboard</a></li>
+            {% elif session.role == 'Manager1' %}
+                <li><a href="/manager1_dashboard">Manager 1 Dashboard</a></li>
+            {% elif session.role == 'Manager2' %}
+                <li><a href="/manager2_dashboard">Manager 2 Dashboard</a></li>
+            {% elif session.role == 'sysadmin' %}
+                <li><a href="/sysadmin_dashboard">Sysadmin Dashboard</a></li> <!-- Create this route -->
+            {% endif %}
         </ul>
     </nav>
     
     <div class="login-container">
         <h1 class="text-center">Login</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                <strong>Error:</strong>
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+        
         <form action="/login" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
