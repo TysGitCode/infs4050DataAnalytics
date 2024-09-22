@@ -3,8 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
+    <title>Manager 1 Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1 {
+            color: #000;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .table {
+            border: 1px solid #000;
+        }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table thead th {
+            background-color: #000;
+            color: #fff;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #e9ecef;
+        }
+        .alert {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn-back {
+            display: block;
+            margin: 20px auto;
+            background-color: #000;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -15,7 +51,7 @@
                     <tr>
                         <th>Task Name</th>
                         <th>Status</th>
-                        <th>Percent Complete</th>
+                        <th>Assigned To</th>
                         <th>Due Date</th>
                     </tr>
                 </thead>
@@ -24,7 +60,7 @@
                     <tr>
                         <td>{{ task.task_name }}</td>
                         <td>{{ task.status }}</td>
-                        <td>{{ task.percent_complete }}</td>
+                        <td>{{ task.assigned_to }}</td>
                         <td>{{ task.due_date }}</td>
                     </tr>
                     {% endfor %}
@@ -34,7 +70,10 @@
             <div class="alert alert-warning">No tasks available.</div>
         {% endif %}
     </div>
-    <a href="/" class="btn btn-primary">Back to Home</a>
+    <a href="/" class="btn btn-back">Back to Home</a>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

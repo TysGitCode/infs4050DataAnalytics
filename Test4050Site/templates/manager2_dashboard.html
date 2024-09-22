@@ -5,47 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager 2 Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        h1, h2 {
+            color: #343a40;
+        }
+        .btn-primary {
+            background-color: #000;
+            border-color: #000;
+        }
+        .btn-primary:hover {
+            background-color: #343a40;
+            border-color: #343a40;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Manager 2 Dashboard</h1>
+        <h1 class="mb-4">Manager 2 Dashboard</h1>
 
-        <h2>Project Overview</h2>
-        <div class="row">
+        <h2 class="mt-4">Project Overview</h2>
+        <div class="row mb-4">
             <div class="col-md-6">
-                <h4>Active Projects</h4>
-                <p>{{ projects|length }}</p>  <!-- Assuming you fetch projects similar to tasks -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h4 class="card-title">Active Projects</h4>
+                        <p class="card-text">{{ projects|length }}</p>
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
-                <h4>Upcoming Deadlines</h4>
-                <ul>
-                    {% for task in tasks if task.due_date >= today %}
-                    <li>{{ task.task_name }} (Due: {{ task.due_date }})</li>
-                    {% endfor %}
-                </ul>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h4 class="card-title">Upcoming Deadlines</h4>
+                        <ul class="list-group">
+                            {% for task in tasks if task.due_date >= today %}
+                            <li class="list-group-item">{{ task.task_name }} (Due: {{ task.due_date }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h2>Key Performance Indicators</h2>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Metric</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Average Completion Time</td>
-                    <td>{{ average_completion_time }} days</td>  <!-- Assuming you calculate this in your app.py -->
-                </tr>
-                <tr>
-                    <td>Task Completion Rate</td>
-                    <td>{{ task_completion_rate }}%</td>  <!-- Assuming you calculate this in your app.py -->
-                </tr>
-            </tbody>
-        </table>
+        <h2 class="mt-4">Key Performance Indicators</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Average Completion Time</h5>
+                        <p class="card-text">{{ average_completion_time }} days</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Task Completion Rate</h5>
+                        <p class="card-text">{{ task_completion_rate }}%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <a href="/" class="btn btn-primary">Back to Home</a>
+    
+    <div class="container text-center mt-4">
+        <a href="/" class="btn btn-primary">Back to Home</a>
+    </div>
 </body>
 </html>
