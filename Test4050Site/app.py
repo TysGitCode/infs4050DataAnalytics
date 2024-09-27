@@ -236,6 +236,13 @@ def delete_user(user_id):
         'role_id': user.role_id
     }
     
+@app.route('/delete_task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    db.session.delete(task)
+    db.session.commit()
+    flash('Task deleted successfully!')
+    return redirect(url_for('manage_tasks'))
     # Perform the deletion
     db.session.delete(user)
     db.session.commit()
@@ -293,6 +300,30 @@ def create_task():
         flash('Task created successfully!')
         return redirect(url_for('manage_tasks'))
     return render_template('create_task.html')
+
+# Route for editing a task
+@app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
+def edit_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    
+    if request.method == 'POST':
+        # Update task details based on form inputs
+        task.task_name = request.form['task_name']
+        task.description = request.form['description']
+        task.status = request.form['status']
+        task.priority = request.form['priority']
+        task.start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
+        task.end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
+        task.due_date = datetime.strptime(request.form['due_date'], '%Y-%m-%d')
+        task.percent_complete = float(request.form['percent_complete'])
+
+        db.session.commit()
+        flash('Task updated successfully!')
+        return redirect(url_for('manage_tasks'))
+    
+    return render_template('edit_task.html', task=task)
+
+
 
 if __name__ == '__main__':
     with app.app_context():

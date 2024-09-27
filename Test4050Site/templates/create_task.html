@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Create New Task</h1>
+        <form action="{{ url_for('create_task') }}" method="POST">
+            <div class="form-group">
+                <label for="task_name">Task Name</label>
+                <input type="text" class="form-control" id="task_name" name="task_name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select class="form-control" id="status" name="status">
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select class="form-control" id="priority" name="priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start_date">Start Date</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" required>
+            </div>
+            <div class="form-group">
+                <label for="end_date">End Date</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" required>
+            </div>
+            <div class="form-group">
+                <label for="due_date">Due Date</label>
+                <input type="date" class="form-control" id="due_date" name="due_date" required>
+            </div>
+            <div class="form-group">
+                <label for="percent_complete">Percent Complete</label>
+                <input type="number" class="form-control" id="percent_complete" name="percent_complete" min="0" max="100" step="0.01">
+            </div>
+            <button type="submit" class="btn btn-primary">Create Task</button>
+        </form>
+        <a href="{{ url_for('manage_tasks') }}" class="btn btn-secondary mt-3">Back to Manage Tasks</a>
+    </div>
+</body>
+</html>

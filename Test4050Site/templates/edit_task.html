@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Edit Task</h1>
+        <form action="{{ url_for('edit_task', task_id=task.task_id) }}" method="POST">
+            <div class="form-group">
+                <label for="task_name">Task Name</label>
+                <input type="text" class="form-control" id="task_name" name="task_name" value="{{ task.task_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{ task.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select class="form-control" id="status" name="status">
+                    <option value="Not Started" {% if task.status == 'Not Started' %}selected{% endif %}>Not Started</option>
+                    <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select class="form-control" id="priority" name="priority">
+                    <option value="High" {% if task.priority == 'High' %}selected{% endif %}>High</option>
+                    <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start_date">Start Date</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ task.start_date }}">
+            </div>
+            <div class="form-group">
+                <label for="end_date">End Date</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ task.end_date }}">
+            </div>
+            <div class="form-group">
+                <label for="due_date">Due Date</label>
+                <input type="date" class="form-control" id="due_date" name="due_date" value="{{ task.due_date }}">
+            </div>
+            <div class="form-group">
+                <label for="percent_complete">Percent Complete</label>
+                <input type="number" class="form-control" id="percent_complete" name="percent_complete" value="{{ task.percent_complete }}" min="0" max="100" step="0.01">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+        <a href="{{ url_for('manage_tasks') }}" class="btn btn-secondary mt-3">Back to Manage Tasks</a>
+    </div>
+</body>
+</html>
