@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Tasks</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Manage Tasks</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.task_name }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>
+                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="/create_task" class="btn btn-success">Add New Task</a>
+    </div>
+    <div class="text-center">
+        <a href="/" class="btn btn-custom mt-3">Back to Home</a> <!-- Added Back to Home button -->
+    </div>
+</body>
+</html>
