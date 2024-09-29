@@ -323,7 +323,25 @@ def edit_task(task_id):
     
     return render_template('edit_task.html', task=task)
 
+@app.route('/Manager2landing')  # This is the route that triggers the HTML file rendering
+def manager_dashboard():
+    return render_template('Manager2landing.html')  # Make sure the filename is correct
 
+@app.route('/managerlanding')  # The route to serve the manager landing page
+def manager_landing():
+    return render_template('managerlanding.html')  # Renders the managerlanding.html template
+
+@app.route('/projectviewmanager1')  # Define the route for the project view page
+def project_view_manager1():
+    return render_template('projectviewmanager1.html')  # Render the corresponding HTML file
+
+@app.route('/userlanding')  # Define the route for the user landing page
+def user_landing():
+    return render_template('userlanding.html')  # Render the user landing HTML page
+
+@app.route('/userprojectview')  # Define the route for the user project view page
+def user_project_view():
+    return render_template('userprojectview.html')  # Render the user project view HTML page
 
 if __name__ == '__main__':
     with app.app_context():
