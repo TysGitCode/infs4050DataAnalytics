@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        .btn-black {
+            background-color: #007bff; /* Adjusted for consistency */
+            color: #fff;
+        }
+        .forgot-password a {
+            color: #007bff; /* Updated color for consistency */
+            text-decoration: none;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            {% if session.role == 'user' %}
+                <li><a href="/user_dashboard">User Dashboard</a></li>
+            {% elif session.role == 'Manager1' %}
+                <li><a href="/manager1_dashboard">Manager 1 Dashboard</a></li>
+            {% elif session.role == 'Manager2' %}
+                <li><a href="/manager2_dashboard">Manager 2 Dashboard</a></li>
+            {% elif session.role == 'sysadmin' %}
+                <li><a href="/sysadmin_dashboard">Sysadmin Dashboard</a></li> <!-- Create this route -->
+            {% endif %}
+        </ul>
+    </nav>
+    
+    <div class="login-container">
+        <h1 class="text-center">Login</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                <strong>Error:</strong>
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+        
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-black btn-block">Login</button>
+        </form>
+        <p class="text-center mt-3 forgot-password">
+            <a href="#">Forgot Password?</a>
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

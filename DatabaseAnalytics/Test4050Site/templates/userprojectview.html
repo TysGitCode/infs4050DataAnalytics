@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project##'s Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style><!--I need to make css files and organize this before it gets out of hand.-->
+        body {
+            background-color: #f8f9fa;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+		/* Initially hide the update form */
+		.update-form {
+			display: none;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		/* Show the form when hovering over the progress container */
+		.progress-container:hover .update-form {
+			display: block;
+			opacity: 1;
+		}
+
+		/* Optional: You can also change the cursor or add some styling on hover */
+		.progress-container:hover .progress-bar {
+			cursor: pointer;
+		}
+				        /* Priority Colors */
+        .priority-high {
+            background-color: #f44336; /* Red for high priority */
+            color: white;
+        }
+
+        .priority-medium {
+            background-color: #ff9800; /* Orange for medium priority */
+            color: white;
+        }
+
+        .priority-low {
+            background-color: #4caf50; /* Green for low priority */
+            color: white;
+        }
+
+        .priority-cell {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="header text-center">
+			<!--Need project name and to query db for specific project, w/ relevant user.-->
+            <h1 class="display-4">Project##'s Task Dashboard</h1>
+            <p class="lead">Here are your assigned tasks:</p>
+        </div>
+        <div class="table-responsive">
+            {% if tasks %}
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Task Name</th>
+                            <th>Status</th>
+							<th>Priority</th>
+							<th>Percent Complete</th>
+                            <th>Due Date</th>
+							<th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %} <!--Remove this below logic if need be, I just looked up how to assign html/css classes via flask based on our priority value-->
+                        <tr class="task-row {% if task.priority == 'high' %}priority-high{% elif task.priority == 'medium' %}priority-medium{% elif task.priority == 'low' %}priority-low{% endif %}">
+                            <td>{{ task.task_name }}</td>
+                            <td>{{ task.status }}</td>
+							<td>{{ task.priority }}</td>
+							<td>
+								<!-- Progress Bar, if progress bar is too much we can remove it, I just thought it was cool. It'll look better in the flask environment. -->
+								<div class="progress-container">
+									<div class="progress w-100">
+										<div class="progress-bar" role="progressbar" style="width: {{ task.percent_complete }}%;" 
+											 aria-valuenow="{{ task.percent_complete }}" aria-valuemin="0" aria-valuemax="100">
+											{{ task.percent_complete }}%
+										</div>
+									</div>
+									<!-- Update Form (hidden by default, visible on hover) for changing percentage complete as a user -->
+									<div class="update-form">
+										<form action="/update_percent_complete/{{ task.id }}" method="POST">
+											<div class="input-group mt-2">
+												<input type="number" name="percent_complete" class="form-control" min="0" max="100" value="{{ task.percent_complete }}">
+												<div class="input-group-append">
+													<button type="submit" class="btn btn-success">Update</button>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</td>
+                            <td>{{ task.due_date.strftime('%Y-%m-%d') }}</td>
+							        <!-- New Comment Column -->
+							<td>
+								<!-- Display the first 50 characters of the comment -->
+								{% if task.comments %}
+									<p>
+										{{ task.comments[0].content[:50] }}...
+										<a href="#" data-toggle="modal" data-target="#commentModal{{ task.id }}">View All</a>
+									</p>
+								{% else %}
+									<p>No comments yet.</p>
+								{% endif %}
+							</td>
+                        </tr>
+						
+						<!-- Modal for Viewing Full Comments -->
+						<div class="modal fade" id="commentModal{{ task.id }}" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel{{ task.id }}" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="commentModalLabel{{ task.id }}">Comments for {{ task.task_name }}</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<!-- Display all comments -->
+										{% for comment in task.comments %}
+											<p><strong>{{ comment.author }}:</strong> {{ comment.content }} ({{ comment.date_posted.strftime('%Y-%m-%d') }})</p>
+										{% endfor %}
+									</div>
+									<div class="modal-footer">
+										<!-- Form to Add a New Comment -->
+										<form action="/add_comment/{{ task.id }}" method="POST">
+											<div class="form-group">
+												<label for="new-comment">Add a Comment:</label>
+												<textarea name="comment" class="form-control" rows="2" required></textarea>
+											</div>
+											<button type="submit" class="btn btn-primary">Add Comment</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-warning text-center">No tasks available for this user.</div>
+            {% endif %}
+        </div>
+        <div class="text-center">
+            <a href="/" class="btn btn-primary btn-lg">Back to Home</a>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

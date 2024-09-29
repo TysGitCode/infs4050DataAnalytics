@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project##'s Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+		tr .edit-btn {
+			display: inline-block;
+		}
+		#add-btn {
+			display: inline-block;
+			color: #212529;
+			background-color: #ffc107;
+    		border-color: #ffc107;
+		}
+		#add-task-container {
+			text-align: center;
+			margin-top: 20px;
+		}
+		        /* Priority Colors */
+        .priority-high {
+            background-color: #f44336; /* Red for high priority */
+            color: white;
+        }
+
+        .priority-medium {
+            background-color: #ff9800; /* Orange for medium priority */
+            color: white;
+        }
+
+        .priority-low {
+            background-color: #4caf50; /* Green for low priority */
+            color: white;
+        }
+
+        .priority-cell {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="header text-center">
+			<!--Need project name and to query db for specific project, w/ relevant user.-->
+            <h1 class="display-4">Project##</h1>
+            <p class="lead">Project's tasks:</p>
+        </div>
+        <div class="table-responsive">
+            {% if tasks %}
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Task Name</th>
+                            <th>Status</th>
+							<th>Priority</th>
+							<th>Percent Complete</th>
+                            <th>Due Date</th>
+							<th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %} <!--Remove this below logic if need be, I just looked up how to assign classes via flask-->
+                        <tr class="task-row {% if task.priority == 'high' %}priority-high{% elif task.priority == 'medium' %}priority-medium{% elif task.priority == 'low' %}priority-low{% endif %}">
+                            <td>{{ task.task_name }}</td>
+                            <td>{{ task.status }}</td>
+							<!--I'd like color priorities for each priority level: low, medium, high.-->
+							<td>{{ task.priority }}</td>
+							<td>
+								<div class="progress-container">
+										<div class="progress w-100">
+											<div class="progress-bar" role="progressbar" style="width: {{ task.percent_complete }}%;" 
+												 aria-valuenow="{{ task.percent_complete }}" aria-valuemin="0" aria-valuemax="100">
+												{{ task.percent_complete }}%
+											</div>
+										</div>
+								</div>
+							</td>
+                            <td>{{ task.due_date.strftime('%Y-%m-%d') }}</td>
+							<td>
+							<!--Need flask route for edit page-->
+								<a href="/edit_task/{{ task.id }}" class="btn btn-warning edit-btn">Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+				<div id="add-task-container">
+					<button class="btn" id="add-btn">Add Task</button>
+				</div>
+            {% else %}
+                <div class="alert alert-warning text-center">No tasks assigned to this project.</div>
+            {% endif %}
+        </div>
+        <div class="text-center">
+            <a href="/" class="btn btn-primary btn-lg">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
