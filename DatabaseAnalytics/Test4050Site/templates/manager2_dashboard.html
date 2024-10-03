@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager 2 Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        h1, h2 {
+            color: #343a40;
+        }
+        .btn-primary {
+            background-color: #000;
+            border-color: #000;
+        }
+        .btn-primary:hover {
+            background-color: #343a40;
+            border-color: #343a40;
+        }
+        .chart-container {
+            height: 300px;
+            width: 100%;
+        }
+        /* Uniform card height */
+        .card-uniform {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px; /* Adding padding inside cards */
+        }
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+        /* Styling the lists inside project overview */
+        .project-list {
+            list-style: none;
+            padding: 0;
+        }
+        .project-list li {
+            margin-bottom: 10px;
+        }
+        .project-list li span {
+            font-weight: bold;
+        }
+        /* Color coding priority */
+        .priority-high { color: #dc3545; font-weight: bold; }
+        .priority-medium { color: #ffc107; font-weight: bold; }
+        .priority-low { color: #28a745; font-weight: bold; }
+
+        /* Increased height for KPI cards */
+        .kpi-card {
+            height: 200px; /* Adjust height as needed */
+            padding: 40px; /* Increased padding for a spacious look */
+        }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Manager 2 Dashboard</h1>
+
+        <!-- KPIs Section -->
+        <h2>Key Performance Indicators</h2>
+        <div class="row">
+            <!-- Full-width KPI card for Average Completion Time -->
+            <div class="col-md-12">
+                <div class="card mb-4 kpi-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Average Completion Time</h5>
+                        <p class="card-text display-4">{{ average_completion_time }} days</p> <!-- Larger font for the data -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full-width KPI card for Task Completion Rate -->
+            <div class="col-md-12">
+                <div class="card mb-4 kpi-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Task Completion Rate</h5>
+                        <p class="card-text display-4">{{ task_completion_rate }}%</p> <!-- Larger font for the data -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Overview Section -->
+        <h2 class="mt-4">Project Overview</h2>
+        <div class="row">
+            <!-- Project A Card -->
+            <div class="col-md-4">
+                <div class="card mb-3 card-uniform">
+                    <div class="card-body card-content">
+                        <h5 class="card-title">Project A</h5>
+                        <ul class="project-list">
+                            <li><span>Status:</span> In Progress</li>
+                            <li><span>Due Date:</span> 2024-10-15</li>
+                            <li><span>Progress:</span> 45%</li>
+                            <li><span>Tasks:</span> 9/20 completed</li>
+                            <li><span>Priority:</span> <span class="priority-high">High</span></li>
+                            <li><span>Team Members:</span> Alice, Bob, Charlie</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project B Card -->
+            <div class="col-md-4">
+                <div class="card mb-3 card-uniform">
+                    <div class="card-body card-content">
+                        <h5 class="card-title">Project B</h5>
+                        <ul class="project-list">
+                            <li><span>Status:</span> Completed</li>
+                            <li><span>Due Date:</span> 2024-09-30</li>
+                            <li><span>Progress:</span> 100%</li>
+                            <li><span>Tasks:</span> 20/20 completed</li>
+                            <li><span>Priority:</span> <span class="priority-medium">Medium</span></li>
+                            <li><span>Team Members:</span> David, Eve</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project C Card -->
+            <div class="col-md-4">
+                <div class="card mb-3 card-uniform">
+                    <div class="card-body card-content">
+                        <h5 class="card-title">Project C</h5>
+                        <ul class="project-list">
+                            <li><span>Status:</span> Pending Approval</li>
+                            <li><span>Due Date:</span> 2024-11-01</li>
+                            <li><span>Progress:</span> 30%</li>
+                            <li><span>Tasks:</span> 3/10 completed</li>
+                            <li><span>Priority:</span> <span class="priority-low">Low</span></li>
+                            <li><span>Team Members:</span> Frank, Grace</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Performance Section -->
+        <h2 class="mt-4">Team Performance</h2>
+        <div class="row">
+            <!-- Bottom 3 Employees -->
+            <div class="col-md-6">
+                <div class="card mb-3 card-uniform">
+                    <div class="card-body">
+                        <h5 class="card-title">Bottom 3 Employees (Under Review)</h5>
+                        <div class="chart-container">
+                            <canvas id="bottomEmployeesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top 3 Employees -->
+            <div class="col-md-6">
+                <div class="card mb-3 card-uniform">
+                    <div class="card-body">
+                        <h5 class="card-title">Top 3 Employees</h5>
+                        <div class="chart-container">
+                            <canvas id="topEmployeesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-center mt-4">
+            <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Data for Bottom 3 Employees Chart
+        var bottomEmployeesCtx = document.getElementById('bottomEmployeesChart').getContext('2d');
+        var bottomEmployeesChart = new Chart(bottomEmployeesCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for employee in bottom_employees %}"{{ employee.username }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Performance Score (%)',
+                    data: [{% for employee in bottom_employees %}{{ employee.performance_score }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100  // Explicitly set max to 100
+                    }
+                }
+            }
+        });
+
+        // Data for Top 3 Employees Chart
+        var topEmployeesCtx = document.getElementById('topEmployeesChart').getContext('2d');
+        var topEmployeesChart = new Chart(topEmployeesCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for employee in top_performers %}"{{ employee.username }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Performance Score (%)',
+                    data: [{% for employee in top_performers %}{{ employee.performance_score }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100  // Explicitly set max to 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
