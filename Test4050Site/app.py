@@ -99,23 +99,77 @@ def manager1_dashboard():
 
 @app.route('/manager2_dashboard')
 def manager2_dashboard():
-    tasks = Task.query.all()
-    average_completion_time = 5  # Placeholder logic
-    task_completion_rate = 80  # Placeholder logic
-    active_projects = Project.query.count()
-    upcoming_tasks = Task.query.filter(Task.due_date >= date.today()).all()
-    bottom_employees = [{'name': 'John Doe', 'performance_score': 60}, {'name': 'Jane Smith', 'performance_score': 65}, {'name': 'Alice Johnson', 'performance_score': 70}]
-    top_performers = [{'name': 'Michael Brown', 'performance_score': 95}, {'name': 'David Clark', 'performance_score': 90}, {'name': 'Sara White', 'performance_score': 85}]
+    # Fetch all projects and tasks
+    projects = Project.query.all()
     
+    # Initialize the data we will pass to the template
+    project_data = []
+    total_completed_tasks = 0
+    total_tasks = 0
+    total_completion_time = 0
+    task_completion_rates = []
+    
+    # Prepare team performance data (e.g., for bottom and top employees)
+    bottom_employees = []
+    top_performers = []
+    
+    for project in projects:
+        # Fetch the tasks related to the project
+        tasks = Task.query.filter_by(project_id=project.project_id).all()
+        completed_tasks = Task.query.filter_by(project_id=project.project_id, status='Completed').count()
+        total_project_tasks = len(tasks)
+        
+        # Calculate progress percentage
+        progress = (completed_tasks / total_project_tasks * 100) if total_project_tasks > 0 else 0
+        
+        # Calculate average completion time for each task
+        total_project_completion_time = sum(task.actual_days for task in tasks if task.actual_days is not None)
+        average_completion_time = (total_project_completion_time / completed_tasks) if completed_tasks > 0 else 0
+        
+        # Prepare data for the task completion rate
+        task_completion_rate = (completed_tasks / total_project_tasks * 100) if total_project_tasks > 0 else 0
+        
+        # Calculate global totals for all projects
+        total_completed_tasks += completed_tasks
+        total_tasks += total_project_tasks
+        total_completion_time += total_project_completion_time
+        
+        # Fetch owner details
+        task = tasks[0] if tasks else None
+        owner = User.query.filter_by(user_id=task.owner_id).first() if task else None
+        team_member = owner.username if owner else 'N/A'
+        
+        # Append project-specific data
+        project_data.append({
+            'project_name': project.project_name,
+            'status': task.status if task else 'N/A',
+            'due_date': task.due_date.strftime('%Y-%m-%d') if task and task.due_date else 'N/A',
+            'progress': round(progress, 2),
+            'completed_tasks': completed_tasks,
+            'total_tasks': total_project_tasks,
+            'priority': task.priority if task else 'N/A',
+            'team_members': team_member
+        })
+        
+    # Calculate global completion rate
+    global_completion_rate = (total_completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+    global_average_completion_time = (total_completion_time / total_completed_tasks) if total_completed_tasks > 0 else 0
+
+    # Fetch bottom and top performers for team performance (this is just a placeholder for now)
+    bottom_employees = [{'username': 'Employee A', 'performance_score': 50}, {'username': 'Employee B', 'performance_score': 60}, {'username': 'Employee B', 'performance_score': 60}]
+    top_performers = [{'username': 'Employee X', 'performance_score': 95}, {'username': 'Employee Y', 'performance_score': 90}]
+    
+    # Render the dashboard with all the data
     return render_template(
         'manager2_dashboard.html',
-        active_projects=active_projects,
-        upcoming_tasks=upcoming_tasks,
-        average_completion_time=average_completion_time,
-        task_completion_rate=task_completion_rate,
+        projects=project_data,
+        average_completion_time=round(global_average_completion_time, 2),
+        task_completion_rate=round(global_completion_rate, 2),
         bottom_employees=bottom_employees,
         top_performers=top_performers
     )
+
+
 
 @app.route('/user_dashboard/<int:user_id>')
 def user_dashboard(user_id):

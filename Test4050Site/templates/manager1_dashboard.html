@@ -8,11 +8,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            background-color: #f8f9fa;
+            background: url("{{ url_for('static', filename='Background2.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
             font-family: 'Arial', sans-serif;
         }
         .container {
             padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9); /* Add a slight white background for readability */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
             color: #333;
@@ -43,7 +47,7 @@
             color: #333;
         }
         .btn-custom {
-            background-color: #007bff;
+            background-color: #F80000; /* Red button background */
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -51,7 +55,7 @@
             transition: background-color 0.3s;
         }
         .btn-custom:hover {
-            background-color: #0056b3;
+            background-color: #cc0000; /* Darker red on hover */
         }
         .chart-container {
             flex: 1;
@@ -139,7 +143,7 @@
         </div>
 
         <div class="text-center">
-            <a href="/" class="btn btn-custom mt-3">Back to Home</a> <!-- Added Back to Home button -->
+            <a href="/" class="btn btn-custom mt-3">Back to Home</a> <!-- Red Back to Home button -->
         </div>
     </div>
 
@@ -157,7 +161,7 @@
                 datasets: [{
                     label: 'Task Status',
                     data: [completedTasks, inProgressTasks, notStartedTasks],
-                    backgroundColor: ['#28a745', '#ffc107', '#dc3545'], // Original colors retained
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545'], // Green for Completed, Yellow for In Progress, Red for Not Started
                     borderWidth: 1
                 }]
             },
@@ -171,25 +175,36 @@
             }
         });
 
-        // Bar Chart for Task Priority Distribution
+        // Bar Chart for Task Priority Distribution (Separate datasets for each priority)
         const highPriorityTasks = {{ high_priority | tojson }};
         const mediumPriorityTasks = {{ medium_priority | tojson }};
         const lowPriorityTasks = {{ low_priority | tojson }};
-
-        const taskTypes = ['High Priority', 'Medium Priority', 'Low Priority'];
-        const taskCounts = [highPriorityTasks, mediumPriorityTasks, lowPriorityTasks];
 
         const distributionCtx = document.getElementById('taskDistributionChart').getContext('2d');
         const taskDistributionChart = new Chart(distributionCtx, {
             type: 'bar',
             data: {
-                labels: taskTypes,
-                datasets: [{
-                    label: 'Task Priority Distribution',
-                    data: taskCounts,
-                    backgroundColor: ['#dc3545', '#ffc107', '#28a745'], // New colors for priority levels
-                    borderWidth: 1
-                }]
+                labels: ['Tasks'], // Single label for each task category
+                datasets: [
+                    {
+                        label: 'High Priority',
+                        data: [highPriorityTasks],
+                        backgroundColor: '#dc3545', // Red for high priority
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Medium Priority',
+                        data: [mediumPriorityTasks],
+                        backgroundColor: '#ffc107', // Yellow for medium priority
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Low Priority',
+                        data: [lowPriorityTasks],
+                        backgroundColor: '#28a745', // Green for low priority
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,

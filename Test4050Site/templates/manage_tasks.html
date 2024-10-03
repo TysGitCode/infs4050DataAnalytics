@@ -2,11 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Tasks</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='Background4.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            color: #212529;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h1 {
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        .table {
+            background-color: white;
+        }
+        .btn-primary {
+            background-color: #343a40; /* Dark Gray for Edit buttons */
+            border-color: #343a40;
+        }
+        .btn-primary:hover {
+            background-color: #212529;
+            border-color: #212529;
+        }
+        .btn-success {
+            background-color: #343a40; /* Dark Gray for Add New Task button */
+            border-color: #343a40;
+        }
+        .btn-success:hover {
+            background-color: #212529;
+            border-color: #212529;
+        }
+        .btn-danger {
+            background-color: #F80000; /* Oracle Red for Delete button */
+            border-color: #F80000;
+        }
+        .btn-danger:hover {
+            background-color: #cc0000;
+            border-color: #cc0000;
+        }
+        .btn-custom {
+            background-color: #F80000; /* Oracle Red for Back to Home button */
+            border-color: #F80000;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #cc0000;
+            border-color: #cc0000;
+        }
+        .btn-custom {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
+    <div class="container">
         <h1>Manage Tasks</h1>
         <table class="table table-striped">
             <thead>
@@ -41,5 +100,9 @@
     <div class="text-center">
         <a href="/" class="btn btn-custom mt-3">Back to Home</a>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

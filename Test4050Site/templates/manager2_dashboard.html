@@ -7,19 +7,28 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background: url("{{ url_for('static', filename='Background2.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
             color: #212529;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background for readability */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         h1, h2 {
             color: #343a40;
+            margin-bottom: 20px;
         }
         .btn-primary {
-            background-color: #000;
-            border-color: #000;
+            background-color: #F80000; /* Oracle Red */
+            border-color: #F80000;
         }
         .btn-primary:hover {
-            background-color: #343a40;
-            border-color: #343a40;
+            background-color: #cc0000;
+            border-color: #cc0000;
         }
         .chart-container {
             height: 300px;
@@ -30,7 +39,10 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px; /* Adding padding inside cards */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         .card-content {
             display: flex;
@@ -38,7 +50,6 @@
             justify-content: space-between;
             height: 100%;
         }
-        /* Styling the lists inside project overview */
         .project-list {
             list-style: none;
             padding: 0;
@@ -49,17 +60,49 @@
         .project-list li span {
             font-weight: bold;
         }
-        /* Color coding priority */
         .priority-high { color: #dc3545; font-weight: bold; }
         .priority-medium { color: #ffc107; font-weight: bold; }
         .priority-low { color: #28a745; font-weight: bold; }
 
-        /* Increased height for KPI cards */
-        .kpi-card {
-            height: 200px; /* Adjust height as needed */
-            padding: 40px; /* Increased padding for a spacious look */
+        /* Carousel item adjustments */
+        .carousel-item {
+            display: flex;
+            justify-content: center;
         }
 
+        .carousel-inner .carousel-item {
+            transition: transform 0.6s ease;
+        }
+
+        /* Fix for the last item getting stuck */
+        .carousel-inner {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .carousel-item.active {
+            flex: 1;
+        }
+
+        /* Positioning the carousel controls at the bottom */
+        .carousel-control-prev, .carousel-control-next {
+            position: absolute;
+            bottom: 10px;
+            width: auto;
+            height: auto;
+        }
+        .carousel-control-prev {
+            left: 15px;
+        }
+        .carousel-control-next {
+            right: 15px;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #F80000; /* Oracle Red */
+            border-radius: 50%;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -70,86 +113,69 @@
         <!-- KPIs Section -->
         <h2>Key Performance Indicators</h2>
         <div class="row">
-            <!-- Full-width KPI card for Average Completion Time -->
             <div class="col-md-12">
                 <div class="card mb-4 kpi-card">
                     <div class="card-body text-center">
                         <h5 class="card-title">Average Completion Time</h5>
-                        <p class="card-text display-4">{{ average_completion_time }} days</p> <!-- Larger font for the data -->
+                        <p class="card-text display-4">{{ average_completion_time }} days</p>
                     </div>
                 </div>
             </div>
-
-            <!-- Full-width KPI card for Task Completion Rate -->
             <div class="col-md-12">
                 <div class="card mb-4 kpi-card">
                     <div class="card-body text-center">
                         <h5 class="card-title">Task Completion Rate</h5>
-                        <p class="card-text display-4">{{ task_completion_rate }}%</p> <!-- Larger font for the data -->
+                        <p class="card-text display-4">{{ task_completion_rate }}%</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Project Overview Section -->
+        <!-- Project Overview Section with Carousel -->
         <h2 class="mt-4">Project Overview</h2>
-        <div class="row">
-            <!-- Project A Card -->
-            <div class="col-md-4">
-                <div class="card mb-3 card-uniform">
-                    <div class="card-body card-content">
-                        <h5 class="card-title">Project A</h5>
-                        <ul class="project-list">
-                            <li><span>Status:</span> In Progress</li>
-                            <li><span>Due Date:</span> 2024-10-15</li>
-                            <li><span>Progress:</span> 45%</li>
-                            <li><span>Tasks:</span> 9/20 completed</li>
-                            <li><span>Priority:</span> <span class="priority-high">High</span></li>
-                            <li><span>Team Members:</span> Alice, Bob, Charlie</li>
-                        </ul>
+        <div id="projectCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                {% for project in projects %}
+                    <div class="carousel-item {% if loop.first %} active {% endif %}">
+                        <div class="card mb-3 card-uniform">
+                            <div class="card-body card-content">
+                                <h5 class="card-title">Project #{{ loop.index }}: {{ project.project_name }}</h5>
+                                <ul class="project-list">
+                                    <li><span>Status:</span> {{ project.status }}</li>
+                                    <li><span>Due Date:</span> {{ project.due_date }}</li>
+                                    <li><span>Progress:</span> {{ project.progress }}%</li>
+                                    <li><span>Tasks:</span> {{ project.completed_tasks }}/{{ project.total_tasks }} completed</li>
+                                    <li><span>Priority:</span>
+                                        {% if project.priority == 'High' %}
+                                            <span class="priority-high">High</span>
+                                        {% elif project.priority == 'Medium' %}
+                                            <span class="priority-medium">Medium</span>
+                                        {% else %}
+                                            <span class="priority-low">Low</span>
+                                        {% endif %}
+                                    </li>
+                                    <li><span>Team Member (Owner):</span> {{ project.team_members }}</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                {% endfor %}
             </div>
-
-            <!-- Project B Card -->
-            <div class="col-md-4">
-                <div class="card mb-3 card-uniform">
-                    <div class="card-body card-content">
-                        <h5 class="card-title">Project B</h5>
-                        <ul class="project-list">
-                            <li><span>Status:</span> Completed</li>
-                            <li><span>Due Date:</span> 2024-09-30</li>
-                            <li><span>Progress:</span> 100%</li>
-                            <li><span>Tasks:</span> 20/20 completed</li>
-                            <li><span>Priority:</span> <span class="priority-medium">Medium</span></li>
-                            <li><span>Team Members:</span> David, Eve</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project C Card -->
-            <div class="col-md-4">
-                <div class="card mb-3 card-uniform">
-                    <div class="card-body card-content">
-                        <h5 class="card-title">Project C</h5>
-                        <ul class="project-list">
-                            <li><span>Status:</span> Pending Approval</li>
-                            <li><span>Due Date:</span> 2024-11-01</li>
-                            <li><span>Progress:</span> 30%</li>
-                            <li><span>Tasks:</span> 3/10 completed</li>
-                            <li><span>Priority:</span> <span class="priority-low">Low</span></li>
-                            <li><span>Team Members:</span> Frank, Grace</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <!-- Carousel controls -->
+            <a class="carousel-control-prev" href="#projectCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#projectCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
+        
 
         <!-- Team Performance Section -->
         <h2 class="mt-4">Team Performance</h2>
         <div class="row">
-            <!-- Bottom 3 Employees -->
             <div class="col-md-6">
                 <div class="card mb-3 card-uniform">
                     <div class="card-body">
@@ -160,8 +186,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Top 3 Employees -->
             <div class="col-md-6">
                 <div class="card mb-3 card-uniform">
                     <div class="card-body">
@@ -179,7 +203,16 @@
         </div>
     </div>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
+        // Initialize Bootstrap carousel
+        $('#projectCarousel').carousel({
+            interval: false  // No automatic sliding, user must click to navigate
+        });
+
         // Data for Bottom 3 Employees Chart
         var bottomEmployeesCtx = document.getElementById('bottomEmployeesChart').getContext('2d');
         var bottomEmployeesChart = new Chart(bottomEmployeesCtx, {

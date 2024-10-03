@@ -3,75 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Oracle Login Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f8f9fa;
-            color: #212529;
+            background: url("{{ url_for('static', filename='LoginBackground.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            color: #444444;
+            font-family: 'Roboto', sans-serif;
         }
-        .login-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        nav {
+
+        .overlay {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25); /* Semi-transparent black overlay */
+            z-index: 1;
         }
-        nav ul {
-            list-style-type: none;
-            padding: 0;
+
+        .login-container {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.2); /* Slightly transparent white background */
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        nav ul li {
-            display: inline;
-            margin-right: 20px;
+
+        /* Smooth fade-in for the login box */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        nav ul li a {
-            text-decoration: none;
-            color: #000;
-            font-weight: bold;
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #F80000; /* Oracle red */
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-        .btn-black {
-            background-color: #007bff; /* Adjusted for consistency */
+
+        .form-group label {
+            font-weight: 500;
             color: #fff;
         }
-        .forgot-password a {
-            color: #007bff; /* Updated color for consistency */
-            text-decoration: none;
+
+        .form-control {
+            border-radius: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            transition: all 0.3s ease;
         }
+
+        .form-control:focus {
+            border-color: #F80000;
+            box-shadow: 0 0 10px rgba(248, 0, 0, 0.3);
+        }
+
+        .btn-red {
+            background-color: #F80000;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* 3D button hover effect */
+        .btn-red:hover {
+            background-color: #cc0000;
+            transform: translateY(-3px);
+            box-shadow: 0px 4px 15px rgba(248, 0, 0, 0.4);
+        }
+
+        /* Glowing effect on focus */
+        .btn-red:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(248, 0, 0, 0.6);
+        }
+
+        /* Links hover with subtle underline animation */
+        .forgot-password a {
+            color: #F80000;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
         .forgot-password a:hover {
             text-decoration: underline;
+            color: #fff;
+        }
+
+        .alert-danger {
+            font-size: 14px;
+            background-color: rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Optional background particle effect */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            {% if session.role == 'user' %}
-                <li><a href="/user_dashboard">User Dashboard</a></li>
-            {% elif session.role == 'Manager1' %}
-                <li><a href="/manager1_dashboard">Manager 1 Dashboard</a></li>
-            {% elif session.role == 'Manager2' %}
-                <li><a href="/manager2_dashboard">Manager 2 Dashboard</a></li>
-            {% elif session.role == 'sysadmin' %}
-                <li><a href="/sysadmin_dashboard">Sysadmin Dashboard</a></li> <!-- Create this route -->
-            {% endif %}
-        </ul>
-    </nav>
-    
+    <div class="overlay"></div> <!-- Overlay for dimming the background image -->
+
     <div class="login-container">
-        <h1 class="text-center">Login</h1>
-        
+        <h1>Oracle Dashboard Login</h1>
+
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="alert alert-danger">
@@ -83,9 +154,8 @@
                 </ul>
             </div>
         {% endif %}
-    {% endwith %}
-    
-        
+        {% endwith %}
+
         <form action="/login" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -95,11 +165,8 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-black btn-block">Login</button>
+            <button type="submit" class="btn-red btn-block">Login</button>
         </form>
-        <p class="text-center mt-3 forgot-password">
-            <a href="#">Forgot Password?</a>
-        </p>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
